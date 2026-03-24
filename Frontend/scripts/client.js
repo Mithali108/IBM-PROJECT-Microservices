@@ -1,18 +1,20 @@
 let cart = [];
 let allBooks = [];
+let booksRefreshTimer = null;
 
 // Default placeholder image
 const DEFAULT_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='500'%3E%3Crect fill='%23e2e8f0' width='400' height='500'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%2364748b' text-anchor='middle' dy='.3em'%3EBook Cover%3C/text%3E%3C/svg%3E";
 
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
+  restoreViewState();
   loadBooks();
   setupEventListeners();
   updateDateTime();
   setInterval(updateDateTime, 1000);
   
   // Auto-refresh books every 3 seconds to show admin changes
-  setInterval(loadBooks, 3000);
+  booksRefreshTimer = setInterval(loadBooks, 3000);
   
   // Setup cart button
   const cartBtn = document.querySelector(".cart-btn");
@@ -65,10 +67,55 @@ async function loadBooks() {
       console.warn("API returned non-array data:", booksData);
       allBooks = [];
     }
-    displayBooks(allBooks);
+    // Re-apply active search/filter/sort selections after auto-refresh.
+    filterBooks();
   } catch (error) {
     console.error("❌ Error loading books:", error);
     allBooks = [];
+    displayBooks([]);
+  }
+}
+
+function getCurrentViewState() {
+  return {
+    search: document.getElementById("searchBar")?.value || "",
+    category: document.getElementById("categoryFilter")?.value || "",
+    maxPrice: document.getElementById("priceFilter")?.value || "1000",
+    sortBy: document.getElementById("sortBy")?.value || "newest"
+  };
+}
+
+function saveViewState() {
+  try {
+    localStorage.setItem("bookverse-client-view", JSON.stringify(getCurrentViewState()));
+  } catch (error) {
+    // Ignore localStorage failures in restricted browser modes.
+  }
+}
+
+function restoreViewState() {
+  try {
+    const raw = localStorage.getItem("bookverse-client-view");
+    if (!raw) return;
+    const state = JSON.parse(raw);
+
+    const searchBar = document.getElementById("searchBar");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const priceFilter = document.getElementById("priceFilter");
+    const sortBy = document.getElementById("sortBy");
+    const priceValueElement = document.getElementById("priceValue");
+
+    if (searchBar && typeof state.search === "string") searchBar.value = state.search;
+    if (categoryFilter && typeof state.category === "string") categoryFilter.value = state.category;
+    if (priceFilter && state.maxPrice) {
+      priceFilter.value = state.maxPrice;
+      if (priceValueElement) {
+        priceValueElement.textContent = `₹0 - ₹${parseInt(state.maxPrice, 10).toLocaleString("en-IN")}`;
+      }
+    }
+    if (sortBy && typeof state.sortBy === "string") sortBy.value = state.sortBy;
+  } catch (error) {
+    // Ignore invalid localStorage data.
   }
 }
 
@@ -150,6 +197,8 @@ function filterBooks() {
   const category = (categoryFilter && categoryFilter.value) ? categoryFilter.value : "";
   const maxPrice = (priceFilter && priceFilter.value) ? parseFloat(priceFilter.value) : Infinity;
   const sortByValue = (sortBy && sortBy.value) ? sortBy.value : "newest";
+
+  saveViewState();
 
   // Ensure allBooks is an array
   if (!Array.isArray(allBooks)) {

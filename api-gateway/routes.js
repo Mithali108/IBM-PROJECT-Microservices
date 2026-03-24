@@ -6,7 +6,8 @@ const router = express.Router();
 const serviceTargets = {
   users: process.env.USER_SERVICE_URL || "http://localhost:5001",
   books: process.env.BOOK_SERVICE_URL || "http://localhost:5002",
-  orders: process.env.ORDER_SERVICE_URL || "http://localhost:5003"
+  orders: process.env.ORDER_SERVICE_URL || "http://localhost:5003",
+  admin: process.env.ADMIN_SERVICE_URL || "http://localhost:5006"
 };
 
 async function proxyToService(req, res, serviceBaseUrl) {
@@ -36,5 +37,6 @@ async function proxyToService(req, res, serviceBaseUrl) {
 router.use("/api/users", (req, res) => proxyToService(req, res, serviceTargets.users));
 router.use("/api/books", (req, res) => proxyToService(req, res, serviceTargets.books));
 router.use("/api/orders", (req, res) => proxyToService(req, res, serviceTargets.orders));
+router.use("/api/admin", (req, res) => proxyToService(req, res, serviceTargets.admin));
 
 module.exports = router;
