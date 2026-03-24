@@ -86,6 +86,22 @@ async function createOrder(orderData) {
   }
 }
 
+// Update an order
+async function updateOrder(orderId, orderData) {
+  try {
+    const response = await fetch(`${API_URL}/orders/${orderId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData)
+    });
+    if (!response.ok) throw new Error("Failed to update order");
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating order:", error);
+    return null;
+  }
+}
+
 // Get dashboard stats
 async function getDashboardStats() {
   try {

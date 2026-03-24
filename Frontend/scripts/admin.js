@@ -127,8 +127,11 @@ function displayOrdersTable() {
 
   orders.forEach(order => {
     const row = document.createElement("tr");
-    const statusClass = `status-${order.status.toLowerCase()}`;
-    const orderDate = new Date(order.date).toLocaleDateString('en-IN');
+    const status = order.status || "Pending";
+    const statusClass = `status-${status.toLowerCase()}`;
+    const orderDate = order.date ? new Date(order.date).toLocaleDateString('en-IN') : "-";
+    const totalAmount = Number(order.total || 0);
+    const bookCount = Number(order.bookCount || 0);
     
     row.innerHTML = `
       <td><strong>#${order.id}</strong></td>
@@ -139,11 +142,11 @@ function displayOrdersTable() {
       </td>
       <td>
         <span class="badge badge-primary">
-          <i class="fas fa-book"></i> ${order.bookCount}
+          <i class="fas fa-book"></i> ${bookCount}
         </span>
       </td>
-      <td><strong style="color: var(--success-color); font-size: 1.05rem;">₹${order.total.toFixed(0)}</strong></td>
-      <td><span class="status-badge ${statusClass}"><i class="fas fa-circle"></i> ${order.status}</span></td>
+      <td><strong style="color: var(--success-color); font-size: 1.05rem;">₹${totalAmount.toFixed(0)}</strong></td>
+      <td><span class="status-badge ${statusClass}"><i class="fas fa-circle"></i> ${status}</span></td>
       <td style="color: var(--text-light);">
         <i class="fas fa-calendar"></i> ${orderDate}
       </td>
@@ -153,7 +156,7 @@ function displayOrdersTable() {
             <i class="fas fa-eye"></i> View
           </button>
           <select onchange="updateOrderStatus(${order.id}, this.value)" style="padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-light); font-size: 0.75rem; width: 100%; background: var(--white); cursor: pointer;">
-            <option value="${order.status}" selected>${order.status}</option>
+            <option value="${status}" selected>${status}</option>
             <option value="Pending">⏳ Pending</option>
             <option value="Completed">✅ Completed</option>
             <option value="Cancelled">❌ Cancelled</option>
@@ -311,15 +314,8 @@ async function updateOrderStatus(orderId, newStatus) {
   if (newStatus === "") return; // No change
   
   try {
-    const response = await fetch(`/api/orders/${orderId}`, {
-      method: "PUT",
-      headers: { 
-        "Content-Type": "application/json" 
-      },
-      body: JSON.stringify({ status: newStatus })
-    });
-
-    if (response.ok) {
+    const updatedOrder = await updateOrder(orderId, { status: newStatus });
+    if (updatedOrder) {
       showNotification(`✓ Order #${orderId} status updated to ${newStatus}!`, "success");
       loadOrders();
       loadDashboard();
