@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Analytics - Book Store</title>
+    <link rel="stylesheet" href="../../styles/admin.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Analytics Dashboard</h1>
+
+    <div class="card">
+        <h3>Total Revenue</h3>
+        <p id="totalRevenue">$0.00</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Orders</h3>
+        <p id="totalOrders">0</p>
+    </div>
+
+    <div class="card">
+        <h3>Recent Purchases</h3>
+        <ul id="recentPurchases"></ul>
+    </div>
+
+    <div class="card">
+        <h3>Revenue Over Time</h3>
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<script src="../../scripts/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fetch and display analytics data
+    async function fetchAnalytics() {
+        const response = await fetch('/api/admin/analytics');
+        const data = await response.json();
+        
+        document.getElementById('totalRevenue').innerText = `$${data.totalRevenue.toFixed(2)}`;
+        document.getElementById('totalOrders').innerText = data.totalOrders;
+
+        const recentPurchasesList = document.getElementById('recentPurchases');
+        recentPurchasesList.innerHTML = '';
+        data.recentPurchases.forEach(purchase => {
+            const li = document.createElement('li');
+            li.innerText = `${purchase.bookTitle} - ${purchase.date}`;
+            recentPurchasesList.appendChild(li);
+        });
+
+        // Chart.js code to display revenue over time
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.revenueOverTime.labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: data.revenueOverTime.values,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    fetchAnalytics();
+</script>
+</body>
+</html>

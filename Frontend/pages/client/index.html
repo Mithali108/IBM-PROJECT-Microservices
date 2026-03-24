@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookVerse - Premium Online Bookstore</title>
+  <link rel="stylesheet" href="../../styles/global.css">
+  <link rel="stylesheet" href="../../styles/client.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-book"></i>
+        <span>BookVerse</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#shop" class="nav-link">Shop</a></li>
+        <li><a href="#featured" class="nav-link">Featured</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-icons">
+        <div class="search-container">
+          <input type="text" id="searchBar" class="search-bar" placeholder="Search by title or author...">
+          <i class="fas fa-search"></i>
+        </div>
+        <button class="cart-btn" onclick="openCart()">
+          <i class="fas fa-shopping-bag"></i>
+          <span id="cartCount" class="cart-badge">0</span>
+        </button>
+        <a href="../../pages/admin/dashboard.html" class="admin-btn" title="Admin Panel">
+          <i class="fas fa-user-shield"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <span class="hero-tag">Welcome to Your Library</span>
+        <h1>Discover Worlds Within Pages</h1>
+        <p>Explore millions of stories, find your next great read, and join our community of book lovers</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="scrollToShop()">
+            <i class="fas fa-arrow-right"></i> Start Exploring
+          </button>
+          <button class="btn btn-outline">
+            <i class="fas fa-info-circle"></i> Learn More
+          </button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-books">
+          <div class="book book-1"></div>
+          <div class="book book-2"></div>
+          <div class="book book-3"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Fast Delivery</h3>
+          <p>Get your books delivered in just 2-3 days</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Secure Payment</h3>
+          <p>Your payment information is always safe</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-undo"></i>
+          </div>
+          <h3>Easy Returns</h3>
+          <p>Return books within 30 days, no questions asked</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>24/7 Support</h3>
+          <p>Our team is here to help you anytime</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter Section -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-header">
+        <h2>Browse Our Collection</h2>
+        <p>Find the perfect book for any mood or occasion</p>
+      </div>
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="categoryFilter">
+            <i class="fas fa-list"></i> Category
+          </label>
+          <select id="categoryFilter" onchange="filterBooks()">
+            <option value="">All Categories</option>
+            <option value="fiction">Fiction</option>
+            <option value="non-fiction">Non-Fiction</option>
+            <option value="mystery">Mystery</option>
+            <option value="romance">Romance</option>
+            <option value="sci-fi">Sci-Fi</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="priceFilter">
+            <i class="fas fa-dollar-sign"></i> Price Range
+          </label>
+          <div class="price-range">
+            <input type="range" id="priceFilter" min="0" max="1000" value="1000" onchange="filterBooks()">
+            <span id="priceValue" class="price-display">₹0 - ₹1,000</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label for="sortBy">
+            <i class="fas fa-sort"></i> Sort By
+          </label>
+          <select id="sortBy" onchange="filterBooks()">
+            <option value="newest">Newest Arrivals</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Books Display Section -->
+  <section id="shop" class="shop-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Featured Books</h2>
+        <p>Handpicked selections just for you</p>
+      </div>
+      <div id="booksGrid" class="books-grid">
+        <!-- Books loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <div class="newsletter-text">
+          <h2>Subscribe to Our Newsletter</h2>
+          <p>Get exclusive deals, new book alerts, and reading recommendations delivered to your inbox</p>
+        </div>
+        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" placeholder="Enter your email..." required>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>About BookVerse</h4>
+          <p>Your premier destination for books of all genres and interests.</p>
+          <div class="social-links">
+            <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#shop">Shop</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Info</h4>
+          <p><i class="fas fa-envelope"></i> support@bookverse.com</p>
+          <p><i class="fas fa-phone"></i> +1 (800) 123-4567</p>
+          <p><i class="fas fa-map-marker-alt"></i> 123 Book Street, Reading City</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 BookVerse. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2>
+          <i class="fas fa-shopping-bag"></i> Shopping Cart
+        </h2>
+        <button class="close-btn" onclick="closeCart()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="cartItems" class="cart-items-container"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>$<span id="cartSubtotal">0</span></span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span class="shipping-cost">FREE</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span class="total-amount">$<span id="cartTotal">0</span></span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="checkout()">
+          <i class="fas fa-check-circle"></i> Proceed to Checkout
+        </button>
+        <button class="btn btn-outline btn-block" onclick="closeCart()">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="../../scripts/api.js"></script>
+  <script src="../../scripts/client.js"></script>
+</body>
+</html>

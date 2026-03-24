@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Book Store</title>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/client.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 Available Books</h1>
+
+    <div class="search-filter">
+        <input type="text" id="searchInput" placeholder="Search for books..." onkeyup="searchBooks()">
+        <select id="categoryFilter" onchange="filterByCategory()">
+            <option value="">All Categories</option>
+            <option value="fiction">Fiction</option>
+            <option value="non-fiction">Non-Fiction</option>
+            <option value="science">Science</option>
+            <option value="history">History</option>
+            <!-- Add more categories as needed -->
+        </select>
+    </div>
+
+    <ul id="bookList"></ul>
+</div>
+
+<script src="../../scripts/api.js"></script>
+<script src="../../scripts/client.js"></script>
+</body>
+</html>

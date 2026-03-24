@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details - Book Store</title>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/client.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Book Details</h1>
+    <div id="bookDetail" class="book-detail">
+        <img id="bookImage" src="" alt="Book Cover" />
+        <h2 id="bookTitle"></h2>
+        <p id="bookAuthor"></p>
+        <p id="bookDescription"></p>
+        <p id="bookPrice"></p>
+        <button id="addToCartButton">Add to Cart</button>
+    </div>
+    <p id="message"></p>
+</div>
+
+<script src="../../scripts/api.js"></script>
+<script src="../../scripts/client.js"></script>
+<script>
+    // Fetch book details based on the book ID from the URL
+    const params = new URLSearchParams(window.location.search);
+    const bookId = params.get('id');
+
+    if (bookId) {
+        loadBookDetails(bookId);
+    }
+
+    function loadBookDetails(id) {
+        // Call API to get book details
+        fetchBookDetails(id).then(book => {
+            document.getElementById('bookImage').src = book.image;
+            document.getElementById('bookTitle').innerText = book.title;
+            document.getElementById('bookAuthor').innerText = `Author: ${book.author}`;
+            document.getElementById('bookDescription').innerText = book.description;
+            document.getElementById('bookPrice').innerText = `Price: $${book.price}`;
+        }).catch(error => {
+            document.getElementById('message').innerText = 'Error loading book details.';
+        });
+    }
+
+    document.getElementById('addToCartButton').addEventListener('click', function() {
+        addToCart(bookId);
+        document.getElementById('message').innerText = 'Book added to cart!';
+    });
+</script>
+
+</body>
+</html>

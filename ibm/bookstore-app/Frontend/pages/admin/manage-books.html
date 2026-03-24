@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Books - Admin</title>
+    <link rel="stylesheet" href="../../styles/admin.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Manage Books</h1>
+
+    <div class="card">
+        <h3>Existing Books</h3>
+        <table id="booksTable">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="booksList">
+                <!-- Book entries will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>Edit Book</h3>
+        <input type="text" id="editBookTitle" placeholder="Book Title">
+        <input type="text" id="editBookAuthor" placeholder="Author">
+        <input type="number" id="editBookPrice" placeholder="Price">
+        <button onclick="updateBook()">Update Book</button>
+    </div>
+
+    <div class="card">
+        <h3>Delete Book</h3>
+        <input type="text" id="deleteBookTitle" placeholder="Enter book title to delete">
+        <button onclick="deleteBook()">Delete Book</button>
+    </div>
+
+    <p id="message"></p>
+</div>
+
+<script src="../../scripts/admin.js"></script>
+</body>
+</html>

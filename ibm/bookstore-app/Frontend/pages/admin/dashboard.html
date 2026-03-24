@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Book Store</title>
+    <link rel="stylesheet" href="../../styles/admin.css">
+</head>
+<body>
+
+<div class="admin-container">
+    <header>
+        <h1>📚 Admin Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="add-book.html">Add Book</a></li>
+                <li><a href="manage-books.html">Manage Books</a></li>
+                <li><a href="analytics.html">Analytics</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="dashboard-overview">
+        <h2>Overview</h2>
+        <div class="metrics">
+            <div class="metric">
+                <h3>Total Books</h3>
+                <p id="totalBooks">0</p>
+            </div>
+            <div class="metric">
+                <h3>Total Orders</h3>
+                <p id="totalOrders">0</p>
+            </div>
+            <div class="metric">
+                <h3>Total Revenue</h3>
+                <p id="totalRevenue">$0.00</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="recent-orders">
+        <h2>Recent Orders</h2>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Book Title</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Orders will be dynamically populated here -->
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<script src="../../scripts/admin.js"></script>
+</body>
+</html>

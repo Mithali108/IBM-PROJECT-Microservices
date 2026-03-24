@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book - Admin</title>
+    <link rel="stylesheet" href="../../styles/admin.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Add New Book</h1>
+    <form id="addBookForm">
+        <div class="form-group">
+            <label for="bookTitle">Book Title:</label>
+            <input type="text" id="bookTitle" required>
+        </div>
+        <div class="form-group">
+            <label for="bookAuthor">Author:</label>
+            <input type="text" id="bookAuthor" required>
+        </div>
+        <div class="form-group">
+            <label for="bookPrice">Price:</label>
+            <input type="number" id="bookPrice" required>
+        </div>
+        <div class="form-group">
+            <label for="bookImage">Book Image URL:</label>
+            <input type="text" id="bookImage" required>
+        </div>
+        <div class="form-group">
+            <label for="bookCategory">Category:</label>
+            <input type="text" id="bookCategory" required>
+        </div>
+        <button type="submit">Add Book</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<script src="../../scripts/admin.js"></script>
+</body>
+</html>

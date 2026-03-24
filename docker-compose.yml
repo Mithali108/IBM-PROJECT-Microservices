@@ -1,0 +1,122 @@
+version: '3.9'
+
+services:
+  # API Gateway - Main entry point
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: bookstore-api-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - book-service
+      - order-service
+      - user-service
+      - notification-service
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # Book Service
+  book-service:
+    build:
+      context: .
+      dockerfile: book-service/Dockerfile
+    container_name: bookstore-book-service
+    ports:
+      - "5002:5002"
+    environment:
+      - NODE_ENV=production
+      - PORT=5002
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # Order Service
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: bookstore-order-service
+    ports:
+      - "5003:5003"
+    environment:
+      - NODE_ENV=production
+      - PORT=5003
+    depends_on:
+      - book-service
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: bookstore-user-service
+    ports:
+      - "5004:5004"
+    environment:
+      - NODE_ENV=production
+      - PORT=5004
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    container_name: bookstore-notification-service
+    ports:
+      - "5005:5005"
+    environment:
+      - NODE_ENV=production
+      - PORT=5005
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: Backend/Dockerfile
+    container_name: bookstore-backend
+    ports:
+      - "5001:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+    container_name: bookstore-frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+    command: http-server Frontend -p 8080
+    depends_on:
+      - api-gateway
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  node_modules:

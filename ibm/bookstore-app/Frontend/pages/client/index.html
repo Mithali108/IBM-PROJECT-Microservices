@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Store - Home</title>
+  <link rel="stylesheet" href="../../styles/global.css">
+  <link rel="stylesheet" href="../../styles/client.css">
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>📚 Welcome to Our Book Store</h1>
+    <nav>
+      <ul>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="featured-books">
+    <h2>Featured Books</h2>
+    <div class="book-list" id="featuredBooks"></div>
+  </section>
+
+  <section class="categories">
+    <h2>Categories</h2>
+    <ul id="categoryList">
+      <li><a href="shop.html?category=fiction">Fiction</a></li>
+      <li><a href="shop.html?category=non-fiction">Non-Fiction</a></li>
+      <li><a href="shop.html?category=children">Children's Books</a></li>
+      <li><a href="shop.html?category=sci-fi">Science Fiction</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 Book Store. All rights reserved.</p>
+  </footer>
+</div>
+
+<script src="../../scripts/api.js"></script>
+<script src="../../scripts/client.js"></script>
+</body>
+</html>
