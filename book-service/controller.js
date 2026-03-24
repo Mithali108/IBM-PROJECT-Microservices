@@ -99,10 +99,70 @@ let books = [
 ];
 
 exports.addBook = (req, res) => {
-  books.push(req.body);
-  res.json({ message: "Book added" });
+  const { title, author, category, price, description, stock, image } = req.body;
+
+  if (!title || !author || !category || price === undefined || stock === undefined) {
+    return res.status(400).json({ message: "Missing required book fields" });
+  }
+
+  const nextId = books.length > 0 ? Math.max(...books.map((book) => book.id || 0)) + 1 : 1;
+  const newBook = {
+    id: nextId,
+    title,
+    author,
+    category,
+    price: Number(price),
+    description: description || "",
+    stock: Number(stock),
+    rating: 0,
+    discount: 0,
+    image: image || ""
+  };
+
+  books.push(newBook);
+  return res.status(201).json(newBook);
 };
 
 exports.getBooks = (req, res) => {
   res.json(books);
+};
+
+exports.getBookById = (req, res) => {
+  const bookId = Number(req.params.id);
+  const book = books.find((item) => item.id === bookId);
+
+  if (!book) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  return res.json(book);
+};
+
+exports.updateBook = (req, res) => {
+  const bookId = Number(req.params.id);
+  const bookIndex = books.findIndex((item) => item.id === bookId);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  books[bookIndex] = {
+    ...books[bookIndex],
+    ...req.body,
+    id: bookId
+  };
+
+  return res.json(books[bookIndex]);
+};
+
+exports.deleteBook = (req, res) => {
+  const bookId = Number(req.params.id);
+  const bookIndex = books.findIndex((item) => item.id === bookId);
+
+  if (bookIndex === -1) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  books.splice(bookIndex, 1);
+  return res.json({ message: "Book deleted successfully" });
 };
