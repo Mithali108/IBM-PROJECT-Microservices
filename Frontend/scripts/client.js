@@ -1,6 +1,8 @@
 let cart = [];
 let allBooks = [];
 let booksRefreshTimer = null;
+let activeOrderId = null;
+const ACTIVE_ORDER_STORAGE_KEY = "bookverse-active-order-id";
 
 // Default placeholder image
 const DEFAULT_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='500'%3E%3Crect fill='%23e2e8f0' width='400' height='500'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='%2364748b' text-anchor='middle' dy='.3em'%3EBook Cover%3C/text%3E%3C/svg%3E";
@@ -8,6 +10,7 @@ const DEFAULT_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
   restoreViewState();
+  restoreActiveOrderId();
   loadBooks();
   setupEventListeners();
   updateDateTime();
@@ -30,6 +33,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function restoreActiveOrderId() {
+  const stored = localStorage.getItem(ACTIVE_ORDER_STORAGE_KEY);
+  activeOrderId = stored ? Number(stored) : null;
+}
+
+function persistActiveOrderId() {
+  if (activeOrderId) {
+    localStorage.setItem(ACTIVE_ORDER_STORAGE_KEY, String(activeOrderId));
+  } else {
+    localStorage.removeItem(ACTIVE_ORDER_STORAGE_KEY);
+  }
+}
+
+function getCartOrderPayload(status) {
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  return {
+    customerName: "Guest Customer",
+    items: cart.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      quantity: item.quantity
+    })),
+    total,
+    status
+  };
+}
+
+async function syncPendingOrderFromCart() {
+  if (cart.length === 0) {
+    if (activeOrderId) {
+      await updateOrder(activeOrderId, { status: "Cancelled" });
+      activeOrderId = null;
+      persistActiveOrderId();
+    }
+    return;
+  }
+
+  const pendingPayload = getCartOrderPayload("Pending");
+  if (activeOrderId) {
+    const updated = await updateOrder(activeOrderId, pendingPayload);
+    if (updated) return;
+  }
+
+  const created = await createOrder(pendingPayload);
+  if (created && created.id) {
+    activeOrderId = created.id;
+    persistActiveOrderId();
+  }
+}
 
 function setupEventListeners() {
   const searchBar = document.getElementById("searchBar");
@@ -258,6 +312,7 @@ function addToCart(bookId, title, price) {
 
   updateCart();
   showNotification(`✓ "${title}" added to cart! (₹${price.toLocaleString('en-IN', {maximumFractionDigits: 0})})`);
+  syncPendingOrderFromCart();
 }
 
 // Update cart display
@@ -556,6 +611,7 @@ function updateQuantity(bookId, change) {
     } else {
       updateCart();
       displayCart();
+      syncPendingOrderFromCart();
     }
   }
 }
@@ -566,6 +622,7 @@ function removeFromCart(bookId) {
   updateCart();
   displayCart();
   showToast("Item removed from cart", "success");
+  syncPendingOrderFromCart();
 }
 
 // Checkout function
@@ -575,33 +632,34 @@ function checkout() {
     return;
   }
   
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  
   // Simulate payment processing
   showToast("Processing your order...", "success");
   
-  setTimeout(() => {
-    // Simulate order creation
-    createOrder({
-      customerName: "Guest Customer",
-      items: cart,
-      total: total
-    }).then(response => {
-      if (response) {
+  setTimeout(async () => {
+    try {
+      let completedOrder = null;
+      const completedPayload = getCartOrderPayload("Completed");
+
+      if (activeOrderId) {
+        completedOrder = await updateOrder(activeOrderId, completedPayload);
+      } else {
+        completedOrder = await createOrder(completedPayload);
+      }
+
+      if (completedOrder) {
         showToast("✓ Order placed successfully! Thank you for your purchase. 🎉", "success");
         cart = [];
         updateCart();
         closeCart();
         loadBooks();
+        activeOrderId = null;
+        persistActiveOrderId();
       } else {
         showToast("Failed to place order. Please try again.", "error");
       }
-    }).catch(error => {
-      showToast("Order placed! You will receive a confirmation email soon.", "success");
-      cart = [];
-      updateCart();
-      closeCart();
-      loadBooks();
-    });
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      showToast("Failed to place order. Please try again.", "error");
+    }
   }, 1500);
 }

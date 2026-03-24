@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   updateDateTime();
   setInterval(updateDateTime, 1000);
   
-  // Auto-refresh data every 5 seconds to sync with client changes
+  // Auto-refresh data every 3 seconds to sync with client changes
   setInterval(() => {
     loadDashboard();
     loadBooks();
     loadOrders();
-  }, 5000);
+  }, 3000);
   
   showSection("dashboard");
 });
@@ -127,8 +127,8 @@ function displayOrdersTable() {
 
   orders.forEach(order => {
     const row = document.createElement("tr");
-    const status = order.status || "Pending";
-    const statusClass = `status-${status.toLowerCase()}`;
+    const status = "Completed";
+    const statusClass = "status-completed";
     const orderDate = order.date ? new Date(order.date).toLocaleDateString('en-IN') : "-";
     const totalAmount = Number(order.total || 0);
     const bookCount = Number(order.bookCount || 0);
@@ -155,12 +155,9 @@ function displayOrdersTable() {
           <button class="btn-view" onclick="viewOrder(${order.id})" style="width: 100%;">
             <i class="fas fa-eye"></i> View
           </button>
-          <select onchange="updateOrderStatus(${order.id}, this.value)" style="padding: 6px 8px; border-radius: 4px; border: 1px solid var(--border-light); font-size: 0.75rem; width: 100%; background: var(--white); cursor: pointer;">
-            <option value="${status}" selected>${status}</option>
-            <option value="Pending">⏳ Pending</option>
-            <option value="Completed">✅ Completed</option>
-            <option value="Cancelled">❌ Cancelled</option>
-          </select>
+          <span class="status-badge ${statusClass}" style="justify-content: center;">
+            <i class="fas fa-circle"></i> ${status}
+          </span>
         </div>
       </td>
     `;
@@ -307,24 +304,6 @@ async function deleteBookConfirm(bookId) {
       console.error("Error deleting book:", error);
       showNotification("✗ An error occurred!", "danger");
     }
-  }
-}
-
-async function updateOrderStatus(orderId, newStatus) {
-  if (newStatus === "") return; // No change
-  
-  try {
-    const updatedOrder = await updateOrder(orderId, { status: newStatus });
-    if (updatedOrder) {
-      showNotification(`✓ Order #${orderId} status updated to ${newStatus}!`, "success");
-      loadOrders();
-      loadDashboard();
-    } else {
-      showNotification("✗ Failed to update order status!", "danger");
-    }
-  } catch (error) {
-    console.error("Error updating order status:", error);
-    showNotification("✗ An error occurred!", "danger");
   }
 }
 

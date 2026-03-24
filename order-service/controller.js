@@ -4,7 +4,7 @@ let orders = [];
 let nextOrderId = 1;
 
 exports.placeOrder = async (req, res) => {
-  const { customerName, items, total } = req.body;
+  const { customerName, items, total, status } = req.body;
 
   if (!customerName || !Array.isArray(items) || total === undefined) {
     return res.status(400).json({ message: "Missing required order fields" });
@@ -16,7 +16,7 @@ exports.placeOrder = async (req, res) => {
     items,
     bookCount: items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0),
     total: Number(total),
-    status: "Pending",
+    status: ["Pending", "Completed", "Cancelled"].includes(status) ? status : "Pending",
     date: new Date().toISOString()
   };
 

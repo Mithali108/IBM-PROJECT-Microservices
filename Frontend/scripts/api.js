@@ -61,7 +61,9 @@ async function deleteBook(bookId) {
 // Fetch all orders
 async function fetchOrders() {
   try {
-    const response = await fetch(`${API_URL}/orders`);
+    const response = await fetch(`${API_URL}/orders?t=${Date.now()}`, {
+      cache: "no-store"
+    });
     if (!response.ok) throw new Error("Failed to fetch orders");
     return await response.json();
   } catch (error) {
@@ -105,7 +107,9 @@ async function updateOrder(orderId, orderData) {
 // Get dashboard stats
 async function getDashboardStats() {
   try {
-    const response = await fetch(`${API_URL}/admin/stats`);
+    const response = await fetch(`${API_URL}/admin/stats?t=${Date.now()}`, {
+      cache: "no-store"
+    });
     if (!response.ok) throw new Error("Failed to fetch stats");
     return await response.json();
   } catch (error) {
