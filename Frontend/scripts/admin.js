@@ -27,7 +27,6 @@ async function loadDashboard() {
     document.getElementById("totalBooks").textContent = stats.totalBooks || "0";
     document.getElementById("totalOrders").textContent = stats.totalOrders || "0";
     document.getElementById("totalRevenue").textContent = "₹" + (parseInt(stats.totalRevenue) || "0");
-    document.getElementById("pendingOrders").textContent = stats.pendingOrders || "0";
     document.getElementById("totalCustomers").textContent = stats.totalCustomers || "0";
     document.getElementById("avgOrderValue").textContent = "₹" + (parseInt(stats.avgOrderValue) || "0");
   } catch (error) {
